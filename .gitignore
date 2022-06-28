@@ -1,0 +1,28 @@
+# Ignore bin and keys directories
+/bin/
+/keys/
+
+# Ignore config and secret files
+/config.yaml
+/secret.yaml
+
+# Ignore vscode and idea folders
+/.vscode/*
+/.idea/
+
+# Ignore log files
+/runner.log
+
+# Ignore vendor folder
+vendor
+
+# Ignore .DS_Store file
+.DS_Store
+
+# Ignore generated folder
+/generated/*
+
+# Ignore temp folder
+/temp_scropt/*
+dev.env
+
