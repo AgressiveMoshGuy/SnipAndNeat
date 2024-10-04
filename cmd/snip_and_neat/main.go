@@ -12,7 +12,10 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	application "SnipAndNeat/internal/app"
+	application "SnipAndNeat/app"
+	"SnipAndNeat/app/config"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func init() {
@@ -31,14 +34,9 @@ type InlineKeyboardButton struct {
 }
 
 func main() {
-	// var cfg Config
-	var err error
-	cfg := application.Config{}
-	if s := viper.GetString("config"); s != "" {
-		if cfg, err = cfg.CreateFromFile(viper.GetString("config")); err != nil {
-			log.Fatal().Msgf("cannot get config", err)
-			os.Exit(1)
-		}
+	cfg, err := config.CreateFromFile()
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create config")
 	}
 
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
@@ -70,6 +68,17 @@ func main() {
 	stopCtx, stopCancel := context.WithTimeout(context.Background(), cfg.StopTimeout)
 	defer stopCancel()
 	if err := app.Stop(stopCtx); err != nil {
+		files, err := os.ReadDir(".")
+		if err != nil {
+			log.Fatal().Err(err).Msg("cannot read current directory")
+		}
+		for _, file := range files {
+			if file.Name() != "main.go" {
+				if err := os.Remove(file.Name()); err != nil {
+					log.Fatal().Err(err).Msgf("cannot remove file %q", file.Name())
+				}
+			}
+		}
 		log.Fatal().Msg("cannot stop application")
 	}
 
