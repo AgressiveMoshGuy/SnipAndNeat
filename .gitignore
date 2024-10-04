@@ -1,0 +1,12 @@
+/bin/
+/keys/
+
+/config.yaml
+/secret.yaml
+/.vscode
+/.idea
+
+runner.log
+
+vendor
+.DS_Store
