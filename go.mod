@@ -7,6 +7,8 @@ require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/diphantxm/ozon-api-client v1.14.0
 	github.com/gin-gonic/gin v1.10.0
+	github.com/go-faster/errors v0.7.1
+	github.com/go-faster/jx v1.1.0
 	github.com/golang-migrate/migrate/v4 v4.18.1
 	github.com/guregu/null v4.0.0+incompatible
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
@@ -16,6 +18,9 @@ require (
 	github.com/rs/zerolog v1.27.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.12.0
+	go.opentelemetry.io/otel v1.29.0
+	go.opentelemetry.io/otel/metric v1.29.0
+	go.opentelemetry.io/otel/trace v1.29.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.8.0
 )
@@ -31,9 +36,9 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/go-faster/errors v0.7.1 // indirect
-	github.com/go-faster/jx v1.1.0 // indirect
 	github.com/go-faster/yaml v0.4.6 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.20.0 // indirect

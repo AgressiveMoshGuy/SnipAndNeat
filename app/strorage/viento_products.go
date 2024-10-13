@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"context"
 	models "xls_importer/models/ozon_models"
 )
 
@@ -41,22 +40,6 @@ func (dto vientoProduct) ToModel() *models.VientoProduct {
 		IsDiscounted: dto.IsDiscounted,
 		Price:        dto.Price,
 	}
-}
-
-func (db *DB) CreateVientoProduct(ctx context.Context, in models.VientoProduct) error {
-	dto := newVientoProduct(in)
-	if err := db.gorm.WithContext(ctx).FirstOrCreate(&dto).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (db *DB) GetVientoProduct(ctx context.Context, productID int64) (*models.VientoProduct, error) {
-	var dto vientoProduct
-	if err := db.gorm.WithContext(ctx).Where("product_id = ?", productID).Find(&dto).Error; err != nil {
-		return nil, err
-	}
-	return dto.ToModel(), nil
 }
 
 // аргегировать из таблицы общее потребление
