@@ -1,7 +1,7 @@
 package storage
 
 import (
-	models "xls_importer/models/ozon_models"
+	models "snipandneat/generated"
 )
 
 type vientoProduct struct {
