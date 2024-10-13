@@ -16,6 +16,8 @@ import (
 	"SnipAndNeat/app/config"
 
 	_ "github.com/mattn/go-sqlite3"
+	// Import to keep it in go.mod.
+	_ "github.com/ogen-go/ogen/cmd/ogen"
 )
 
 func init() {

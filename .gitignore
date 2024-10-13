@@ -3,7 +3,7 @@
 
 /config.yaml
 /secret.yaml
-/.vscode
+/.vscode/*
 /.idea
 
 runner.log
