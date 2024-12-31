@@ -1,4 +1,5 @@
-generator:
   features:
     enable:
-      - "ogen/otel"
+      - "ogen/otel" # Enables OpenTelemetry instrumentation for Ogen HTTP client/server
+    disable:
+      - "security"

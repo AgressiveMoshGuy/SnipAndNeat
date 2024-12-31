@@ -67,12 +67,13 @@ func (db *DB) Start(ctx context.Context) error {
 	go func() {
 		sql.Register("sqlite3_with_extensions", &sqlite3.SQLiteDriver{
 			ConnectHook: func(conn *sqlite3.SQLiteConn) error {
+				conn.AuthEnabled()
+				conn.AuthUserAdd(db.cfg.DBConfig.User, db.cfg.DBConfig.Password, true)
 				return conn.Ping(ctx)
 			},
 		})
 
-		// db.db, err = sql.Open("sqlite3", "./viento.db")
-		db.gdb, err = gorm.Open(sqlite.Open("./viento.db"), &gorm.Config{})
+		db.gdb, err = gorm.Open(sqlite.Open("viento.db"), &gorm.Config{})
 		if err != nil {
 			errCh <- errors.Wrap(err, "cannot open connection")
 			return

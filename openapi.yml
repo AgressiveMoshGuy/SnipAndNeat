@@ -101,11 +101,17 @@ paths:
   /viento/products:
     post:
       tags:
-        - viento
+        - ozon
       summary: get viento products
       description: get viento products
       operationId: getVientoProducts
       responses:
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         '200':
           description: successful operation
           content:
@@ -115,36 +121,183 @@ paths:
         '400':
           description: bad request
 
+  /ozon/list_transaction:
+    post:
+      tags:
+        - ozon
+      summary: get viento list transaction
+      description: get viento list transaction
+      operationId: getVientoListTransaction
+      responses:
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTransactionParams'
+        '400':
+          description: bad request
+
+
+  /ozon/item:
+    post:
+      tags:
+        - ozon
+      summary: get viento items
+      description: get viento items
+      operationId: getVientoItems
+      responses:
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: bad request
+
+  /ozon/posting:
+    post:
+      tags:
+        - ozon
+      summary: get viento posting
+      description: get viento posting
+      operationId: getVientoPosting
+      responses:
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posting'
+        '400':
+          description: bad request
+
+  /ozon/service:
+    post:
+      tags:
+        - ozon
+      summary: get viento services
+      description: get viento services
+      operationId: getVientoServices
+      responses:
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '400':
+          description: bad request
+
+  /ozon/operation:
+    post:
+      tags:
+        - ozon
+      summary: get viento operations
+      description: get viento operations
+      operationId: getVientoOperations
+      responses:
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Operation'
+        '400':
+          description: bad request
+
+  /ozon/sum/services:
+    post:
+      tags:
+        - ozon
+      summary: get sum services by day
+      description: get sum services by day
+      operationId: getSumServicesByDay
+      requestBody:
+        description: Sum services by day parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SumServicesByDayParams'
+      responses:
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - name
+                    - amount
+                  properties:
+                    name:
+                      type: string
+                    amount:
+                      type: number
+                      format: float
+        '400':
+          description: bad request
+
 components:
+  # Reusable schemas (data models)
   schemas:
-    # PetStatus:
-    #   type: string
-    #   description: pet status in the store
-    #   enum:
-    #     - available
-    #     - pending
-    #     - sold
-    # Pet:
-    #   required:
-    #     - name
-    #   properties:
-    #     id:
-    #       type: integer
-    #       format: int64
-    #       example: 10
-    #     name:
-    #       type: string
-    #       example: doggie
-    #     photoUrls:
-    #       type: array
-    #       items:
-    #         type: string
-    #     status:
-    #       $ref: '#/components/schemas/PetStatus'
-    #   type: object
+    Error:
+      description: Represents error object
+      type: object
+      x-ogen-name: Error
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+      required:
+        - code
+        - message
     VientoProduct:
       type: object  
       description: viento product
+      x-ogen-name: VientoProduct
       properties:
         ProductID:
           type: integer
@@ -170,10 +323,138 @@ components:
         Price:
           type: number
           format: float64
-  # requestBodies:
-  #   Pet:
-  #     content:
-  #       application/json:
-  #         schema:
-  #           $ref: '#/components/schemas/Pet'
-  #     description: Pet object that needs to be added to the store
+    Item:
+      type: object
+      description: item in stock
+      x-ogen-name: Item
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        sku:
+          type: integer
+          format: int64
+        viento_id:
+          type: integer
+          format: int64
+        consumption:
+          type: integer
+          format: int64
+    Posting:
+      type: object
+      x-ogen-name: Posting
+      properties:
+        ID:
+          type: integer
+          format: int64
+        DeliverySchema:
+          type: string
+        OrderDate:
+          type: string
+        PostingNumber:
+          type: string
+        WarehouseID:
+          type: integer
+          format: int64
+    Service:
+      type: object
+      x-ogen-name: Service
+      properties:
+        ID:
+          type: integer
+          format: int64
+        OperationID:
+          type: integer
+          format: int64
+        Name:
+          type: string
+        Price:
+          type: number
+          format: float
+    Operation:
+      type: object
+      x-ogen-name: Operation
+      properties:
+        ID:
+          type: integer
+          format: int64
+        OperationID:
+          type: integer
+          format: int64
+        OperationType:
+          type: string
+        OperationDate:
+          type: string
+        OperationTypeName:
+          type: string
+        DeliveryCharge:
+          type: number
+          format: float
+        ReturnDeliveryCharge:
+          type: number
+          format: float
+        AccrualsForSale:
+          type: number
+          format: float
+        SaleCommission:
+          type: number
+          format: float
+        Amount:
+          type: number
+          format: float
+        TransactionType:
+          type: string
+        PostingID:
+          type: integer
+          format: int64
+        ItemSKU:
+          type: integer
+          format: int64
+        Services:
+          type: array
+          items:
+            type: integer
+            format: int64
+    SumServicesByDayParams:
+      type: object
+      x-ogen-name: SumServicesByDayParams
+      properties:
+        date:
+          type: string
+          format: date-time
+    ListTransactionParams:
+      type: object
+      x-ogen-name: ListTransactionParams
+      required:
+        - filter
+        - filter.operation_type
+      properties:
+        filter:
+          type: object
+          properties:
+            date:
+              type: object
+              properties:
+                from:
+                  type: string
+                  format: date-time
+                to:
+                  type: string
+                  format: date-time
+            operation_type:
+              type: array
+              items:
+                type: string
+            posting_number:
+              type: string
+            transaction_type:
+              type: string
+        page:
+          type: integer
+          format: int64
+        page_size:
+          type: integer
+          format: int64
+

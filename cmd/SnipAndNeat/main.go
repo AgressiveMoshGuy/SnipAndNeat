@@ -35,7 +35,7 @@ type InlineKeyboardButton struct {
 	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // optional
 }
 
-//go:generate go run github.com/ogen-go/ogen/cmd/ogen --clean --package oas --target ../../generated ../../openapi.yml
+//go:generate go run github.com/ogen-go/ogen/cmd/ogen --clean --package vnt --target ../../generated  ../../openapi.yml
 func main() {
 	cfg, err := config.CreateFromFile()
 	if err != nil {

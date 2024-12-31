@@ -44,7 +44,7 @@ func (db *DB) CreateOrGetPosting(ctx context.Context,
 	int64, error) {
 	posting := newPosting(in)
 
-	if err := db.gorm.WithContext(ctx).
+	if err := db.gdb.WithContext(ctx).
 		Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "id"}}, DoNothing: true}).
 		Where("posting_number=?", in.PostingNumber).
 		FirstOrCreate(&posting).

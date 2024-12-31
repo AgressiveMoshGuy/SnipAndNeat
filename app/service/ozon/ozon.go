@@ -21,6 +21,8 @@ type Ozon interface {
 
 	VientoProductsInfo(ctx context.Context, in *ozon.GetListOfProductsParams) (*ozon.GetListOfProductsResponse, error)
 	ListProducts(ctx context.Context) ([]*models.VientoProduct, error)
+	GetListTransaction(ctx context.Context, in *models.ListTransactionParams) (*ozon_cli.ListTransactionsResponse, error)
+	GetSumServices(ctx context.Context, in *models.SumServicesByDayParams) (*models.GetSumServicesByDayOKApplicationJSON, error)
 }
 
 type OzonAPI struct {

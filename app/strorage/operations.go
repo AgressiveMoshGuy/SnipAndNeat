@@ -10,7 +10,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 
 	ozon_cli "github.com/diphantxm/ozon-api-client/ozon"
 )
@@ -18,20 +17,19 @@ import (
 const (
 	GetSumOperationsQuery = `
 		select operation_id,
-			items,
+			item_sku,
 			transaction_type,
 			sum(amount) as         amount,
 			sum(accruals_for_sale) accruals_for_sale,
 			sum(sale_commission)   sale_commission
 		from ozon_orders
 			where operation_date >= ? and operation_date <= ?
-		group by operation_id,transaction_type, items
+		group by operation_id,transaction_type, item_sku
 	`
 )
 
 type operation struct {
-	ID                   int64 `gorm:"column:id;primary_key"`
-	OperationID          int64 `gorm:"column:operation_id"`
+	OperationID          int64 `gorm:"column:operation_id;primary_key"`
 	OperationType        string
 	OperationDate        string
 	OperationTypeName    string
@@ -42,12 +40,12 @@ type operation struct {
 	Amount               float64
 	TransactionType      string
 	PostingID            int64         `gorm:"posting_id"`
-	ItemSKU              int64         `gorm:"column:items"`
+	ItemSKU              int64         `gorm:"column:item_sku"`
 	Services             pq.Int64Array `gorm:"services;type:integer[]"`
 }
 
 func (t operation) TableName() string {
-	return "ozon_orders"
+	return "operations"
 }
 
 func newOperation(in ozon_cli.ListTransactionsResultOperation) operation {
@@ -85,20 +83,20 @@ func (dto operation) ToModel() ozon_cli.ListTransactionsResultOperation {
 
 	out.Services = make([]ozon_cli.ListTransactionsResultOperationService, len(dto.Services))
 	for i, v := range dto.Services {
-		out.Services[i].Name = fmt.Sprint(v)
+		out.Services[i].Name = ozon_cli.TransactionOperationService(fmt.Sprint(v))
 	}
 
 	return out
 }
 
 func (db *DB) CreateOperation(ctx context.Context, in ozon_cli.ListTransactionsResultOperation, postingID int64, itemSKU int64) error {
-	operation := newOperation(in)
-	operation.PostingID = postingID
-	operation.ItemSKU = itemSKU
-	if err := db.gorm.WithContext(ctx).Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "operation_id"}},
-		DoNothing: true}).
-		Create(&operation).Error; err != nil {
+	op := newOperation(in)
+	op.PostingID = postingID
+	op.ItemSKU = itemSKU
+	if err := db.gdb.WithContext(ctx).
+		Where("operation_id = ?", op.OperationID).
+		Attrs(operation{OperationID: op.OperationID}).
+		FirstOrCreate(&op).Error; err != nil {
 		log.Error().Err(err)
 		return err
 	}
@@ -108,7 +106,7 @@ func (db *DB) CreateOperation(ctx context.Context, in ozon_cli.ListTransactionsR
 func (db *DB) UpdateOperation(ctx context.Context, operation ozon_cli.ListTransactionsResultOperation, services []int64) error {
 	dto := newOperation(operation)
 	dto.Services = services
-	if err := db.gorm.WithContext(ctx).Where("operation_id = ?", dto.OperationID).
+	if err := db.gdb.WithContext(ctx).Where("operation_id = ?", dto.OperationID).
 		Updates(&dto).Error; err != nil {
 		log.Error().Err(err)
 		return err
@@ -118,14 +116,14 @@ func (db *DB) UpdateOperation(ctx context.Context, operation ozon_cli.ListTransa
 
 func (db *DB) GetOperationsFromTime(ctx context.Context, from, to time.Time) ([]ozon_cli.ListTransactionsResultOperation, error) {
 	dto := make([]operation, 0)
-	if err := db.gorm.WithContext(ctx).
+	if err := db.gdb.WithContext(ctx).
 		Where("operation_date > ? and operation_date < ?", from, to).
 		Find(&dto).Error; err != nil {
 		return nil, errors.Wrapf(err, "cannot get operations from %v to %v", from, to)
 	}
 
 	// services := make([]service, 0)
-	// if err := db.gorm.WithContext(ctx).
+	// if err := db.gdb.WithContext(ctx).
 
 	out := make([]ozon_cli.ListTransactionsResultOperation, len(dto))
 	for i, v := range dto {
@@ -137,7 +135,7 @@ func (db *DB) GetOperationsFromTime(ctx context.Context, from, to time.Time) ([]
 // запрос на получение списка сумм по транзакциям
 func (db *DB) GetSumOperationsFromTime(ctx context.Context, from, to time.Time) ([]ozon_cli.ListTransactionsResultOperation, error) {
 	dto := make([]operation, 0)
-	if err := db.gorm.Raw(GetSumOperationsQuery, from, to).Scan(&dto).Error; err != nil {
+	if err := db.gdb.Raw(GetSumOperationsQuery, from, to).Scan(&dto).Error; err != nil {
 		return nil, errors.Wrapf(err, "cannot get sum info from %v to %v", from, to)
 	}
 	out := make([]ozon_cli.ListTransactionsResultOperation, len(dto))
@@ -150,7 +148,7 @@ func (db *DB) GetSumOperationsFromTime(ctx context.Context, from, to time.Time) 
 
 func (db *DB) GetFirstOperation(ctx context.Context) (ozon_cli.ListTransactionsResultOperation, error) {
 	dto := operation{}
-	if err := db.gorm.Select("operation_date").Order("operation_date").First(&dto).Error; err != nil {
+	if err := db.gdb.Select("operation_date").Order("operation_date").First(&dto).Error; err != nil {
 		if err == sql.ErrNoRows || err == gorm.ErrRecordNotFound {
 			return ozon_cli.ListTransactionsResultOperation{}, nil
 		}
@@ -161,11 +159,26 @@ func (db *DB) GetFirstOperation(ctx context.Context) (ozon_cli.ListTransactionsR
 
 func (db *DB) GetLastOperation(ctx context.Context) (ozon_cli.ListTransactionsResultOperation, error) {
 	dto := operation{}
-	if err := db.gorm.Select("operation_date").Order("operation_date DESC").First(&dto).Error; err != nil {
+	if err := db.gdb.Select("operation_date").Order("operation_date DESC").First(&dto).Error; err != nil {
 		if err == sql.ErrNoRows || err == gorm.ErrRecordNotFound {
 			return ozon_cli.ListTransactionsResultOperation{}, nil
 		}
 		return ozon_cli.ListTransactionsResultOperation{}, errors.Wrapf(err, "cannot get transaction")
 	}
 	return dto.ToModel(), nil
+}
+
+func (db *DB) GetOperation(ctx context.Context, operationID int64) string {
+	serviceName := struct {
+		ID            int64  `gorm:"column:id;primary_key"`
+		OperationName string `gorm:"column:name"`
+		Description   string `gorm:"column:description"`
+	}{}
+	if err := db.gdb.Select("name").Table("services_names").Where("id = ?", operationID).First(&serviceName).Error; err != nil {
+		if err == sql.ErrNoRows || err == gorm.ErrRecordNotFound {
+			return ""
+		}
+		return ""
+	}
+	return serviceName.OperationName
 }

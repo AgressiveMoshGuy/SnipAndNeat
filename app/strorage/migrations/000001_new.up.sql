@@ -1,5 +1,5 @@
 
--- начисления от озона
+-- начисления от озона из отчета о реализации
 CREATE TABLE ozon_pay (
     id INTEGER PRIMARY KEY,
     title TEXT NOT NULL,

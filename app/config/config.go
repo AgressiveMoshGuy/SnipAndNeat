@@ -52,16 +52,16 @@ type Config struct {
 
 	// Config конфигурация подключения к PostgreSQL
 	DBConfig struct {
-		Host            string        `yaml:"host"`
-		Schema          string        `yaml:"schema" default:"public"`
-		User            string        `yaml:"user"`
-		Password        string        `yaml:"password"`
-		Name            string        `yaml:"name"`
-		Port            int           `yaml:"port"`
-		MaxIdleConns    int           `yaml:"max_idle_conns" default:"25"`
-		MaxOpenConns    int           `yaml:"max_open_conns" default:"50"`
-		StartTimeout    time.Duration `yaml:"start_timeout" default:"20s"`
-		ConnMaxLifetime time.Duration `yaml:"conn_max_lifetime" default:"30s"`
+		Host            string        `env:"DB_HOST"`
+		Schema          string        `env:"DB_SCHEMA" default:"public"`
+		User            string        `env:"DB_USER"`
+		Password        string        `env:"DB_PASSWORD"`
+		Name            string        `env:"DB_NAME"`
+		Port            int           `env:"DB_PORT"`
+		MaxIdleConns    int           `env:"DB_MAX_IDLE_CONNS" default:"25"`
+		MaxOpenConns    int           `env:"DB_MAX_OPEN_CONNS" default:"50"`
+		StartTimeout    time.Duration `env:"DB_START_TIMEOUT" default:"20s"`
+		ConnMaxLifetime time.Duration `env:"DB_CONN_MAX_LIFETIME" default:"30s"`
 	}
 }
 
@@ -77,12 +77,9 @@ func CreateFromFile() (*Config, error) {
 // String implementation fmt.Stringer
 func (conf *Config) StringDB() string {
 	return fmt.Sprintf(
-		"sqlite3://%s:%s@%s:%d/%s?sslmode=disable&search_path=%s",
+		"sqlite3://%s.db?_auth&_auth_user=%s&_auth_pass=%s",
+		conf.DBConfig.Name,
 		conf.DBConfig.User,
 		conf.DBConfig.Password,
-		conf.DBConfig.Host,
-		conf.DBConfig.Port,
-		conf.DBConfig.Name,
-		conf.DBConfig.Schema,
 	)
 }

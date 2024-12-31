@@ -70,6 +70,9 @@ func (s *Server) Start(context.Context) error {
 		GET("/healthz", s.getHealth).
 		GET("/health-check", s.getHealth)
 
+	s.rtr.Group("/ozon").
+		POST("/list_transactions", s.ListTransactions).
+		POST("/sum/services", s.GetSumServices)
 	s.rtr.Group("/viento").
 		POST("/list_products", s.VientoProducts)
 	// GET("/dictionary", s.getDictionary).

@@ -3,6 +3,8 @@ package storage
 import (
 	"context"
 
+	models "SnipAndNeat/generated"
+
 	"github.com/rs/zerolog/log"
 )
 
@@ -20,23 +22,25 @@ func (i item) TableName() string {
 
 func newItem(in models.Item) item {
 	return item{
-		Name: in.Name,
-		SKU:  in.SKU,
+		VientoID: in.VientoID.Value,
+		Name:     in.Name.Value,
+		SKU:      in.Sku.Value,
 	}
 }
 
 func (dto item) ToModel() *models.Item {
 	return &models.Item{
-		ID:       dto.ID,
-		Name:     dto.Name,
-		SKU:      dto.SKU,
-		VientoID: dto.VientoID,
+		ID:          models.NewOptInt64(dto.ID),
+		Name:        models.NewOptString(dto.Name),
+		Sku:         models.NewOptInt64(dto.SKU),
+		VientoID:    models.NewOptInt64(dto.VientoID),
+		Consumption: models.NewOptInt64(dto.Consumption),
 	}
 }
 
 func (db *DB) CreateItem(ctx context.Context, in models.Item) (int64, error) {
 	item := newItem(in)
-	if err := db.gorm.WithContext(ctx).Where("sku=?", item.SKU).FirstOrCreate(&item).Error; err != nil {
+	if err := db.gdb.WithContext(ctx).Where("sku=?", item.SKU).FirstOrCreate(&item).Error; err != nil {
 		log.Error().Err(err)
 		return 0, err
 	}
@@ -48,7 +52,7 @@ func (db *DB) GetItemBySKU(ctx context.Context, in int64) (*models.Item, error) 
 		SKU: in,
 	}
 
-	if err := db.gorm.WithContext(ctx).
+	if err := db.gdb.WithContext(ctx).
 		Where("sku = ?", dto.SKU).
 		First(dto).Error; err != nil {
 		return nil, err
@@ -59,7 +63,7 @@ func (db *DB) GetItemBySKU(ctx context.Context, in int64) (*models.Item, error) 
 
 func (db *DB) GetItem(ctx context.Context, id int64) (*models.Item, error) {
 	dto := &item{}
-	if err := db.gorm.WithContext(ctx).
+	if err := db.gdb.WithContext(ctx).
 		Where("id = ?", id).
 		First(dto).Error; err != nil {
 		return nil, err
@@ -70,8 +74,8 @@ func (db *DB) GetItem(ctx context.Context, id int64) (*models.Item, error) {
 
 func (db *DB) UpdateProductConsumpion(ctx context.Context, in models.Item, consumption int64) error {
 	dto := newItem(in)
-	if err := db.gorm.WithContext(ctx).Model(&dto).
-		Where("sku = ?", in.SKU).
+	if err := db.gdb.WithContext(ctx).Model(&dto).
+		Where("sku = ?", dto.SKU).
 		UpdateColumn("consumption", consumption).Error; err != nil {
 		return err
 	}
