@@ -3,12 +3,46 @@
 package vnt
 
 import (
-	"fmt"
 	"time"
 )
 
-func (s *ErrorStatusCode) Error() string {
-	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+type AddPetOK struct {
+	Ok OptBool `json:"ok"`
+}
+
+// GetOk returns the value of Ok.
+func (s *AddPetOK) GetOk() OptBool {
+	return s.Ok
+}
+
+// SetOk sets the value of Ok.
+func (s *AddPetOK) SetOk(val OptBool) {
+	s.Ok = val
+}
+
+type AddPetReq struct {
+	VientoItem     OptVientoItem        `json:"viento_item"`
+	ReportResponse OptGetReportResponse `json:"report_response"`
+}
+
+// GetVientoItem returns the value of VientoItem.
+func (s *AddPetReq) GetVientoItem() OptVientoItem {
+	return s.VientoItem
+}
+
+// GetReportResponse returns the value of ReportResponse.
+func (s *AddPetReq) GetReportResponse() OptGetReportResponse {
+	return s.ReportResponse
+}
+
+// SetVientoItem sets the value of VientoItem.
+func (s *AddPetReq) SetVientoItem(val OptVientoItem) {
+	s.VientoItem = val
+}
+
+// SetReportResponse sets the value of ReportResponse.
+func (s *AddPetReq) SetReportResponse(val OptGetReportResponse) {
+	s.ReportResponse = val
 }
 
 // Represents error object.
@@ -64,6 +98,147 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
+func (*ErrorStatusCode) getOzonItemsRes()             {}
+func (*ErrorStatusCode) getSumServicesByDayRes()      {}
+func (*ErrorStatusCode) getVientoListTransactionRes() {}
+func (*ErrorStatusCode) getVientoOperationsRes()      {}
+func (*ErrorStatusCode) getVientoPostingRes()         {}
+func (*ErrorStatusCode) getVientoProductsRes()        {}
+func (*ErrorStatusCode) getVientoServicesRes()        {}
+
+// GetOzonItemsBadRequest is response for GetOzonItems operation.
+type GetOzonItemsBadRequest struct{}
+
+func (*GetOzonItemsBadRequest) getOzonItemsRes() {}
+
+// Ref: #/components/schemas/GetReportResponse
+type GetReportResponse struct {
+	// Общее число проданных единиц.
+	TotalCount OptInt64 `json:"total_count"`
+	// Общая сумма после коммиссии.
+	Total OptFloat32 `json:"total"`
+	// Доставка.
+	Delivery OptFloat32 `json:"delivery"`
+	// Возврат.
+	RefundAndOthers OptFloat32 `json:"refund_and_others"`
+	// Сервисный сбор.
+	Service OptFloat32 `json:"service"`
+	// Общая сумма.
+	Final OptFloat32 `json:"final"`
+	// Список проданых товаров по позициям.
+	Result []ReportSumInfo `json:"result"`
+}
+
+// GetTotalCount returns the value of TotalCount.
+func (s *GetReportResponse) GetTotalCount() OptInt64 {
+	return s.TotalCount
+}
+
+// GetTotal returns the value of Total.
+func (s *GetReportResponse) GetTotal() OptFloat32 {
+	return s.Total
+}
+
+// GetDelivery returns the value of Delivery.
+func (s *GetReportResponse) GetDelivery() OptFloat32 {
+	return s.Delivery
+}
+
+// GetRefundAndOthers returns the value of RefundAndOthers.
+func (s *GetReportResponse) GetRefundAndOthers() OptFloat32 {
+	return s.RefundAndOthers
+}
+
+// GetService returns the value of Service.
+func (s *GetReportResponse) GetService() OptFloat32 {
+	return s.Service
+}
+
+// GetFinal returns the value of Final.
+func (s *GetReportResponse) GetFinal() OptFloat32 {
+	return s.Final
+}
+
+// GetResult returns the value of Result.
+func (s *GetReportResponse) GetResult() []ReportSumInfo {
+	return s.Result
+}
+
+// SetTotalCount sets the value of TotalCount.
+func (s *GetReportResponse) SetTotalCount(val OptInt64) {
+	s.TotalCount = val
+}
+
+// SetTotal sets the value of Total.
+func (s *GetReportResponse) SetTotal(val OptFloat32) {
+	s.Total = val
+}
+
+// SetDelivery sets the value of Delivery.
+func (s *GetReportResponse) SetDelivery(val OptFloat32) {
+	s.Delivery = val
+}
+
+// SetRefundAndOthers sets the value of RefundAndOthers.
+func (s *GetReportResponse) SetRefundAndOthers(val OptFloat32) {
+	s.RefundAndOthers = val
+}
+
+// SetService sets the value of Service.
+func (s *GetReportResponse) SetService(val OptFloat32) {
+	s.Service = val
+}
+
+// SetFinal sets the value of Final.
+func (s *GetReportResponse) SetFinal(val OptFloat32) {
+	s.Final = val
+}
+
+// SetResult sets the value of Result.
+func (s *GetReportResponse) SetResult(val []ReportSumInfo) {
+	s.Result = val
+}
+
+// Ref: #/components/schemas/GetSumProficiencyParams
+type GetSumProficiencyParams struct {
+	Date OptGetSumProficiencyParamsDate `json:"date"`
+}
+
+// GetDate returns the value of Date.
+func (s *GetSumProficiencyParams) GetDate() OptGetSumProficiencyParamsDate {
+	return s.Date
+}
+
+// SetDate sets the value of Date.
+func (s *GetSumProficiencyParams) SetDate(val OptGetSumProficiencyParamsDate) {
+	s.Date = val
+}
+
+type GetSumProficiencyParamsDate struct {
+	From OptDateTime `json:"from"`
+	To   OptDateTime `json:"to"`
+}
+
+// GetFrom returns the value of From.
+func (s *GetSumProficiencyParamsDate) GetFrom() OptDateTime {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *GetSumProficiencyParamsDate) GetTo() OptDateTime {
+	return s.To
+}
+
+// SetFrom sets the value of From.
+func (s *GetSumProficiencyParamsDate) SetFrom(val OptDateTime) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *GetSumProficiencyParamsDate) SetTo(val OptDateTime) {
+	s.To = val
+}
+
 // GetSumServicesByDayBadRequest is response for GetSumServicesByDay operation.
 type GetSumServicesByDayBadRequest struct{}
 
@@ -98,11 +273,6 @@ func (s *GetSumServicesByDayOKItem) SetAmount(val float32) {
 	s.Amount = val
 }
 
-// GetVientoItemsBadRequest is response for GetVientoItems operation.
-type GetVientoItemsBadRequest struct{}
-
-func (*GetVientoItemsBadRequest) getVientoItemsRes() {}
-
 // GetVientoListTransactionBadRequest is response for GetVientoListTransaction operation.
 type GetVientoListTransactionBadRequest struct{}
 
@@ -134,6 +304,7 @@ type Item struct {
 	ID          OptInt64  `json:"id"`
 	Name        OptString `json:"name"`
 	Sku         OptInt64  `json:"sku"`
+	Ean         OptInt64  `json:"ean"`
 	VientoID    OptInt64  `json:"viento_id"`
 	Consumption OptInt64  `json:"consumption"`
 }
@@ -151,6 +322,11 @@ func (s *Item) GetName() OptString {
 // GetSku returns the value of Sku.
 func (s *Item) GetSku() OptInt64 {
 	return s.Sku
+}
+
+// GetEan returns the value of Ean.
+func (s *Item) GetEan() OptInt64 {
+	return s.Ean
 }
 
 // GetVientoID returns the value of VientoID.
@@ -178,6 +354,11 @@ func (s *Item) SetSku(val OptInt64) {
 	s.Sku = val
 }
 
+// SetEan sets the value of Ean.
+func (s *Item) SetEan(val OptInt64) {
+	s.Ean = val
+}
+
 // SetVientoID sets the value of VientoID.
 func (s *Item) SetVientoID(val OptInt64) {
 	s.VientoID = val
@@ -188,7 +369,7 @@ func (s *Item) SetConsumption(val OptInt64) {
 	s.Consumption = val
 }
 
-func (*Item) getVientoItemsRes() {}
+func (*Item) getOzonItemsRes() {}
 
 // Ref: #/components/schemas/ListTransactionParams
 type ListTransactionParams struct {
@@ -645,6 +826,144 @@ func (o OptFloat64) Or(d float64) float64 {
 	return d
 }
 
+// NewOptGetReportResponse returns new OptGetReportResponse with value set to v.
+func NewOptGetReportResponse(v GetReportResponse) OptGetReportResponse {
+	return OptGetReportResponse{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetReportResponse is optional GetReportResponse.
+type OptGetReportResponse struct {
+	Value GetReportResponse
+	Set   bool
+}
+
+// IsSet returns true if OptGetReportResponse was set.
+func (o OptGetReportResponse) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetReportResponse) Reset() {
+	var v GetReportResponse
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetReportResponse) SetTo(v GetReportResponse) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetReportResponse) Get() (v GetReportResponse, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetReportResponse) Or(d GetReportResponse) GetReportResponse {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetSumProficiencyParams returns new OptGetSumProficiencyParams with value set to v.
+func NewOptGetSumProficiencyParams(v GetSumProficiencyParams) OptGetSumProficiencyParams {
+	return OptGetSumProficiencyParams{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetSumProficiencyParams is optional GetSumProficiencyParams.
+type OptGetSumProficiencyParams struct {
+	Value GetSumProficiencyParams
+	Set   bool
+}
+
+// IsSet returns true if OptGetSumProficiencyParams was set.
+func (o OptGetSumProficiencyParams) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetSumProficiencyParams) Reset() {
+	var v GetSumProficiencyParams
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetSumProficiencyParams) SetTo(v GetSumProficiencyParams) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetSumProficiencyParams) Get() (v GetSumProficiencyParams, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetSumProficiencyParams) Or(d GetSumProficiencyParams) GetSumProficiencyParams {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptGetSumProficiencyParamsDate returns new OptGetSumProficiencyParamsDate with value set to v.
+func NewOptGetSumProficiencyParamsDate(v GetSumProficiencyParamsDate) OptGetSumProficiencyParamsDate {
+	return OptGetSumProficiencyParamsDate{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptGetSumProficiencyParamsDate is optional GetSumProficiencyParamsDate.
+type OptGetSumProficiencyParamsDate struct {
+	Value GetSumProficiencyParamsDate
+	Set   bool
+}
+
+// IsSet returns true if OptGetSumProficiencyParamsDate was set.
+func (o OptGetSumProficiencyParamsDate) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptGetSumProficiencyParamsDate) Reset() {
+	var v GetSumProficiencyParamsDate
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptGetSumProficiencyParamsDate) SetTo(v GetSumProficiencyParamsDate) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptGetSumProficiencyParamsDate) Get() (v GetSumProficiencyParamsDate, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptGetSumProficiencyParamsDate) Or(d GetSumProficiencyParamsDate) GetSumProficiencyParamsDate {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptInt64 returns new OptInt64 with value set to v.
 func NewOptInt64(v int64) OptInt64 {
 	return OptInt64{
@@ -783,6 +1102,52 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
+// NewOptVientoItem returns new OptVientoItem with value set to v.
+func NewOptVientoItem(v VientoItem) OptVientoItem {
+	return OptVientoItem{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptVientoItem is optional VientoItem.
+type OptVientoItem struct {
+	Value VientoItem
+	Set   bool
+}
+
+// IsSet returns true if OptVientoItem was set.
+func (o OptVientoItem) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptVientoItem) Reset() {
+	var v VientoItem
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptVientoItem) SetTo(v VientoItem) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptVientoItem) Get() (v VientoItem, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptVientoItem) Or(d VientoItem) VientoItem {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // Ref: #/components/schemas/Posting
 type Posting struct {
 	ID             OptInt64  `json:"ID"`
@@ -843,6 +1208,46 @@ func (s *Posting) SetWarehouseID(val OptInt64) {
 }
 
 func (*Posting) getVientoPostingRes() {}
+
+// Ref: #/components/schemas/ReportSumInfo
+type ReportSumInfo struct {
+	// Название товара.
+	ItemName OptString `json:"item_name"`
+	// Количество.
+	Count OptInt64 `json:"count"`
+	// Сумма.
+	Amount OptFloat32 `json:"amount"`
+}
+
+// GetItemName returns the value of ItemName.
+func (s *ReportSumInfo) GetItemName() OptString {
+	return s.ItemName
+}
+
+// GetCount returns the value of Count.
+func (s *ReportSumInfo) GetCount() OptInt64 {
+	return s.Count
+}
+
+// GetAmount returns the value of Amount.
+func (s *ReportSumInfo) GetAmount() OptFloat32 {
+	return s.Amount
+}
+
+// SetItemName sets the value of ItemName.
+func (s *ReportSumInfo) SetItemName(val OptString) {
+	s.ItemName = val
+}
+
+// SetCount sets the value of Count.
+func (s *ReportSumInfo) SetCount(val OptInt64) {
+	s.Count = val
+}
+
+// SetAmount sets the value of Amount.
+func (s *ReportSumInfo) SetAmount(val OptFloat32) {
+	s.Amount = val
+}
 
 // Ref: #/components/schemas/Service
 type Service struct {
@@ -907,6 +1312,55 @@ func (s *SumServicesByDayParams) GetDate() OptDateTime {
 // SetDate sets the value of Date.
 func (s *SumServicesByDayParams) SetDate(val OptDateTime) {
 	s.Date = val
+}
+
+// Ref: #/components/schemas/VientoItem
+type VientoItem struct {
+	ID    int64   `json:"id" gorm:"primaryKey;autoIncrement"`
+	Name  string  `json:"name"`
+	Price float64 `json:"price"`
+	// Barcode from viento price list.
+	Ean int64 `json:"ean"`
+}
+
+// GetID returns the value of ID.
+func (s *VientoItem) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *VientoItem) GetName() string {
+	return s.Name
+}
+
+// GetPrice returns the value of Price.
+func (s *VientoItem) GetPrice() float64 {
+	return s.Price
+}
+
+// GetEan returns the value of Ean.
+func (s *VientoItem) GetEan() int64 {
+	return s.Ean
+}
+
+// SetID sets the value of ID.
+func (s *VientoItem) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *VientoItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetPrice sets the value of Price.
+func (s *VientoItem) SetPrice(val float64) {
+	s.Price = val
+}
+
+// SetEan sets the value of Ean.
+func (s *VientoItem) SetEan(val int64) {
+	s.Ean = val
 }
 
 // Viento product.

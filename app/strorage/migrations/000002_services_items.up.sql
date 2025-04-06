@@ -10,6 +10,7 @@ CREATE TABLE items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     sku INTEGER,
+    ean INTEGER,
     viento_id INTEGER,
     consumption INTEGER
 );

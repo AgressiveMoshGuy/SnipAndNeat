@@ -9,27 +9,35 @@ tags:
   - name: pet
     description: Everything about your Pets
 paths:
-  # /pet:
-  #   post:
-  #     tags:
-  #       - pet
-  #     summary: Add a new pet to the store
-  #     description: Add a new pet to the store
-  #     operationId: addPet
-  #     responses:
-  #       '200':
-  #         description: Successful operation
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/Pet'
-  #     requestBody:
-  #       description: Create a new pet in the store
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/Pet'
+  /pet:
+    post:
+      tags:
+        - pet
+      summary: Add a new pet to the store
+      description: Add a new pet to the store
+      operationId: addPet
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+      requestBody:
+        description: Create a new pet in the store
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                viento_item:
+                  $ref: '#/components/schemas/VientoItem'
+                report_response:
+                  $ref: '#/components/schemas/GetReportResponse'
   # '/pet/{petId}':
   #   get:
   #     tags:
@@ -128,6 +136,12 @@ paths:
       summary: get viento list transaction
       description: get viento list transaction
       operationId: getVientoListTransaction
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetSumProficiencyParams'
       responses:
         default:
           description: General Error
@@ -144,14 +158,13 @@ paths:
         '400':
           description: bad request
 
-
   /ozon/item:
     post:
       tags:
         - ozon
-      summary: get viento items
-      description: get viento items
-      operationId: getVientoItems
+      summary: get ozon items
+      description: get ozon items
+      operationId: getOzonItems
       responses:
         default:
           description: General Error
@@ -336,6 +349,9 @@ components:
         sku:
           type: integer
           format: int64
+        ean:
+          type: integer
+          format: int64
         viento_id:
           type: integer
           format: int64
@@ -457,4 +473,90 @@ components:
         page_size:
           type: integer
           format: int64
+    GetSumProficiencyParams: 
+      type: object
+      x-ogen-name: GetSumProficiencyParams
+      properties:
+        date:
+          type: object
+          properties:
+            from:
+              type: string
+              format: date-time
+            to:
+              type: string
+              format: date-time
+
+    GetReportResponse:
+      type: object
+      properties:
+        total_count:
+          type: integer
+          format: int64
+          description: общее число проданных единиц
+        total:
+          type: number
+          format: float
+          description: общая сумма после коммиссии
+        delivery:
+          type: number
+          format: float
+          description: доставка
+        refund_and_others:
+          type: number
+          format: float
+          description: возврат
+        service:
+          type: number
+          format: float
+          description: сервисный сбор
+        final:
+          type: number
+          format: float
+          description: общая сумма
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportSumInfo'
+          description: список проданых товаров по позициям
+
+    ReportSumInfo:
+      type: object
+      properties:
+        item_name:
+          type: string
+          description: название товара
+        count:
+          type: integer
+          format: int64
+          description: количество
+        amount:
+          type: number
+          format: float
+          description: сумма
+   
+    VientoItem:
+      type: object
+      required:
+        - name
+        - price
+        - ean
+        - id
+      properties:
+        id:
+          type: integer
+          format: int64
+          x-oapi-codegen-extra-tags:
+            gorm: primaryKey;autoIncrement
+        name:
+          type: string
+        price:
+          type: number
+          format: float64
+        ean:
+          type: integer
+          description: barcode from viento price list
+          format: int64
+
+
 

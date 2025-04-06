@@ -1,3 +1,5 @@
+VERSION:=$(shell git log --date=short --pretty=format:'%cd-%h' -n 1)
+
 .PHONY: start
 start:
 	@echo "Running SnipAndNeat application"
@@ -24,6 +26,9 @@ check_generated: generate
 	git diff --exit-code
 .PHONY: check_generated
 
-db_start: 
-	
-
+build:
+	GOPRIVATE=$(GOPRIVATE) CGO_ENABLED=1 go build \
+		-v \
+		-ldflags "-w -s -extldflags '-static' -X main.VERSION=$(VERSION)" \
+		-tags 'netgo std static_all' \
+		-o output ./cmd/SnipAndNeat/main.go

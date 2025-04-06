@@ -16,15 +16,16 @@ import (
 
 const (
 	GetSumOperationsQuery = `
-		select operation_id,
-			item_sku,
-			transaction_type,
-			sum(amount) as         amount,
-			sum(accruals_for_sale) accruals_for_sale,
-			sum(sale_commission)   sale_commission
-		from ozon_orders
-			where operation_date >= ? and operation_date <= ?
-		group by operation_id,transaction_type, item_sku
+	select operation_id,
+		item_sku,
+		transaction_type,
+		sum(amount) as         amount,
+		sum(accruals_for_sale) accruals_for_sale,
+		sum(sale_commission)   sale_commission
+
+	from ozon_orders
+	where operation_date >= $1 and operation_date <= $2
+	group by operation_id, transaction_type, item_sku
 	`
 )
 

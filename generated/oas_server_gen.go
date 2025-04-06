@@ -8,24 +8,30 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AddPet implements addPet operation.
+	//
+	// Add a new pet to the store.
+	//
+	// POST /pet
+	AddPet(ctx context.Context, req *AddPetReq) (*AddPetOK, error)
+	// GetOzonItems implements getOzonItems operation.
+	//
+	// Get ozon items.
+	//
+	// POST /ozon/item
+	GetOzonItems(ctx context.Context) (GetOzonItemsRes, error)
 	// GetSumServicesByDay implements getSumServicesByDay operation.
 	//
 	// Get sum services by day.
 	//
 	// POST /ozon/sum/services
 	GetSumServicesByDay(ctx context.Context, req *SumServicesByDayParams) (GetSumServicesByDayRes, error)
-	// GetVientoItems implements getVientoItems operation.
-	//
-	// Get viento items.
-	//
-	// POST /ozon/item
-	GetVientoItems(ctx context.Context) (GetVientoItemsRes, error)
 	// GetVientoListTransaction implements getVientoListTransaction operation.
 	//
 	// Get viento list transaction.
 	//
 	// POST /ozon/list_transaction
-	GetVientoListTransaction(ctx context.Context) (GetVientoListTransactionRes, error)
+	GetVientoListTransaction(ctx context.Context, req OptGetSumProficiencyParams) (GetVientoListTransactionRes, error)
 	// GetVientoOperations implements getVientoOperations operation.
 	//
 	// Get viento operations.
@@ -50,10 +56,6 @@ type Handler interface {
 	//
 	// POST /ozon/service
 	GetVientoServices(ctx context.Context) (GetVientoServicesRes, error)
-	// NewError creates *ErrorStatusCode from error returned by handler.
-	//
-	// Used for common default response.
-	NewError(ctx context.Context, err error) *ErrorStatusCode
 }
 
 // Server implements http server based on OpenAPI v3 specification and

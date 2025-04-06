@@ -1,0 +1,42 @@
+version: '3'
+services:
+  snipandneat:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    env_file:
+      - .env
+    environment:
+      ADDRESS: "0.0.0.0:8083"
+      SERVER_START_TIMEOUT: "5s"
+      START_TIMEOUT: "10s"
+      READ_TIMEOUT: "10s"
+      WRITE_TIMEOUT: "5s"     
+      STOP_TIMEOUT: "5s"
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8082:8082"
+      - "8083:8083"
+    depends_on:
+      - prometheus
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure

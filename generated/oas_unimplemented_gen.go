@@ -13,6 +13,24 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AddPet implements addPet operation.
+//
+// Add a new pet to the store.
+//
+// POST /pet
+func (UnimplementedHandler) AddPet(ctx context.Context, req *AddPetReq) (r *AddPetOK, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetOzonItems implements getOzonItems operation.
+//
+// Get ozon items.
+//
+// POST /ozon/item
+func (UnimplementedHandler) GetOzonItems(ctx context.Context) (r GetOzonItemsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetSumServicesByDay implements getSumServicesByDay operation.
 //
 // Get sum services by day.
@@ -22,21 +40,12 @@ func (UnimplementedHandler) GetSumServicesByDay(ctx context.Context, req *SumSer
 	return r, ht.ErrNotImplemented
 }
 
-// GetVientoItems implements getVientoItems operation.
-//
-// Get viento items.
-//
-// POST /ozon/item
-func (UnimplementedHandler) GetVientoItems(ctx context.Context) (r GetVientoItemsRes, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
 // GetVientoListTransaction implements getVientoListTransaction operation.
 //
 // Get viento list transaction.
 //
 // POST /ozon/list_transaction
-func (UnimplementedHandler) GetVientoListTransaction(ctx context.Context) (r GetVientoListTransactionRes, _ error) {
+func (UnimplementedHandler) GetVientoListTransaction(ctx context.Context, req OptGetSumProficiencyParams) (r GetVientoListTransactionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -74,12 +83,4 @@ func (UnimplementedHandler) GetVientoProducts(ctx context.Context) (r GetVientoP
 // POST /ozon/service
 func (UnimplementedHandler) GetVientoServices(ctx context.Context) (r GetVientoServicesRes, _ error) {
 	return r, ht.ErrNotImplemented
-}
-
-// NewError creates *ErrorStatusCode from error returned by handler.
-//
-// Used for common default response.
-func (UnimplementedHandler) NewError(ctx context.Context, err error) (r *ErrorStatusCode) {
-	r = new(ErrorStatusCode)
-	return r
 }

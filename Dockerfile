@@ -1,39 +1,24 @@
-# -----------------------------------------------------------------------------
-#  Build Stage
-# -----------------------------------------------------------------------------
-    FROM golang:alpine3.18 AS build
+FROM golang:alpine3.19 AS builder
 
-    # Important:
-    #   Because this is a CGO enabled package, you are required to set it as 1.
-    ENV CGO_ENABLED=1
-    
-    RUN apk add --no-cache \
-        # Important: required for go-sqlite3
-        gcc \
-        # Required for Alpine
-        musl-dev
-    
-    WORKDIR /workspace
-    
-    COPY . /workspace/
-    
-    RUN \
-        cd _example/simple && \
-        go mod init github.com/mattn/sample && \
-        go mod edit -replace=github.com/mattn/go-sqlite3=../.. && \
-        go mod tidy && \
-        go install -ldflags='-s -w -extldflags "-static"' ./simple.go
-    
-    RUN \
-        # Smoke test
-        set -o pipefail; \
-        /go/bin/simple | grep 99\ こんにちは世界099
-    
-    # -----------------------------------------------------------------------------
-    #  Main Stage
-    # -----------------------------------------------------------------------------
-    FROM scratch
-    
-    COPY --from=build /go/bin/simple /usr/local/bin/simple
-    
-    ENTRYPOINT [ "/usr/local/bin/simple" ]
+ENV CGO_ENABLED=1
+
+RUN apk add --no-cache gcc musl-dev make
+
+WORKDIR /build
+# We want to populate the module cache based on the go.{mod,sum} files.
+COPY go.mod .
+COPY go.sum .
+RUN go mod download -x
+
+COPY . .
+RUN make build
+
+FROM alpine:3.19
+COPY --from=builder /build/output /bin/output
+
+EXPOSE 8080/tcp
+EXPOSE 8081/tcp
+EXPOSE 8082/tcp
+EXPOSE 8083/tcp
+ENTRYPOINT ["/bin/output"]
+

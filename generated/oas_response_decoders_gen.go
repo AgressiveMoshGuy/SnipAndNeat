@@ -14,6 +14,133 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+func decodeAddPetResponse(resp *http.Response) (res *AddPetOK, _ error) {
+	switch resp.StatusCode {
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response AddPetOK
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}
+	return res, validate.UnexpectedStatusCode(resp.StatusCode)
+}
+
+func decodeGetOzonItemsResponse(resp *http.Response) (res GetOzonItemsRes, _ error) {
+	switch resp.StatusCode {
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response Item
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	case 400:
+		// Code 400.
+		return &GetOzonItemsBadRequest{}, nil
+	}
+	// Default response.
+	res, err := func() (res GetOzonItemsRes, err error) {
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response Error
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			return &ErrorStatusCode{
+				StatusCode: resp.StatusCode,
+				Response:   response,
+			}, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	}()
+	if err != nil {
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
+	}
+	return res, nil
+}
+
 func decodeGetSumServicesByDayResponse(resp *http.Response) (res GetSumServicesByDayRes, _ error) {
 	switch resp.StatusCode {
 	case 200:
@@ -64,8 +191,8 @@ func decodeGetSumServicesByDayResponse(resp *http.Response) (res GetSumServicesB
 		// Code 400.
 		return &GetSumServicesByDayBadRequest{}, nil
 	}
-	// Convenient error response.
-	defRes, err := func() (res *ErrorStatusCode, err error) {
+	// Default response.
+	res, err := func() (res GetSumServicesByDayRes, err error) {
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
@@ -106,93 +233,7 @@ func decodeGetSumServicesByDayResponse(resp *http.Response) (res GetSumServicesB
 	if err != nil {
 		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
-	return res, errors.Wrap(defRes, "error")
-}
-
-func decodeGetVientoItemsResponse(resp *http.Response) (res GetVientoItemsRes, _ error) {
-	switch resp.StatusCode {
-	case 200:
-		// Code 200.
-		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		if err != nil {
-			return res, errors.Wrap(err, "parse media type")
-		}
-		switch {
-		case ct == "application/json":
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return res, err
-			}
-			d := jx.DecodeBytes(buf)
-
-			var response Item
-			if err := func() error {
-				if err := response.Decode(d); err != nil {
-					return err
-				}
-				if err := d.Skip(); err != io.EOF {
-					return errors.New("unexpected trailing data")
-				}
-				return nil
-			}(); err != nil {
-				err = &ogenerrors.DecodeBodyError{
-					ContentType: ct,
-					Body:        buf,
-					Err:         err,
-				}
-				return res, err
-			}
-			return &response, nil
-		default:
-			return res, validate.InvalidContentType(ct)
-		}
-	case 400:
-		// Code 400.
-		return &GetVientoItemsBadRequest{}, nil
-	}
-	// Convenient error response.
-	defRes, err := func() (res *ErrorStatusCode, err error) {
-		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
-		if err != nil {
-			return res, errors.Wrap(err, "parse media type")
-		}
-		switch {
-		case ct == "application/json":
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return res, err
-			}
-			d := jx.DecodeBytes(buf)
-
-			var response Error
-			if err := func() error {
-				if err := response.Decode(d); err != nil {
-					return err
-				}
-				if err := d.Skip(); err != io.EOF {
-					return errors.New("unexpected trailing data")
-				}
-				return nil
-			}(); err != nil {
-				err = &ogenerrors.DecodeBodyError{
-					ContentType: ct,
-					Body:        buf,
-					Err:         err,
-				}
-				return res, err
-			}
-			return &ErrorStatusCode{
-				StatusCode: resp.StatusCode,
-				Response:   response,
-			}, nil
-		default:
-			return res, validate.InvalidContentType(ct)
-		}
-	}()
-	if err != nil {
-		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
-	}
-	return res, errors.Wrap(defRes, "error")
+	return res, nil
 }
 
 func decodeGetVientoListTransactionResponse(resp *http.Response) (res GetVientoListTransactionRes, _ error) {
@@ -236,8 +277,8 @@ func decodeGetVientoListTransactionResponse(resp *http.Response) (res GetVientoL
 		// Code 400.
 		return &GetVientoListTransactionBadRequest{}, nil
 	}
-	// Convenient error response.
-	defRes, err := func() (res *ErrorStatusCode, err error) {
+	// Default response.
+	res, err := func() (res GetVientoListTransactionRes, err error) {
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
@@ -278,7 +319,7 @@ func decodeGetVientoListTransactionResponse(resp *http.Response) (res GetVientoL
 	if err != nil {
 		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
-	return res, errors.Wrap(defRes, "error")
+	return res, nil
 }
 
 func decodeGetVientoOperationsResponse(resp *http.Response) (res GetVientoOperationsRes, _ error) {
@@ -331,8 +372,8 @@ func decodeGetVientoOperationsResponse(resp *http.Response) (res GetVientoOperat
 		// Code 400.
 		return &GetVientoOperationsBadRequest{}, nil
 	}
-	// Convenient error response.
-	defRes, err := func() (res *ErrorStatusCode, err error) {
+	// Default response.
+	res, err := func() (res GetVientoOperationsRes, err error) {
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
@@ -373,7 +414,7 @@ func decodeGetVientoOperationsResponse(resp *http.Response) (res GetVientoOperat
 	if err != nil {
 		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
-	return res, errors.Wrap(defRes, "error")
+	return res, nil
 }
 
 func decodeGetVientoPostingResponse(resp *http.Response) (res GetVientoPostingRes, _ error) {
@@ -417,8 +458,8 @@ func decodeGetVientoPostingResponse(resp *http.Response) (res GetVientoPostingRe
 		// Code 400.
 		return &GetVientoPostingBadRequest{}, nil
 	}
-	// Convenient error response.
-	defRes, err := func() (res *ErrorStatusCode, err error) {
+	// Default response.
+	res, err := func() (res GetVientoPostingRes, err error) {
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
@@ -459,7 +500,7 @@ func decodeGetVientoPostingResponse(resp *http.Response) (res GetVientoPostingRe
 	if err != nil {
 		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
-	return res, errors.Wrap(defRes, "error")
+	return res, nil
 }
 
 func decodeGetVientoProductsResponse(resp *http.Response) (res GetVientoProductsRes, _ error) {
@@ -512,8 +553,8 @@ func decodeGetVientoProductsResponse(resp *http.Response) (res GetVientoProducts
 		// Code 400.
 		return &GetVientoProductsBadRequest{}, nil
 	}
-	// Convenient error response.
-	defRes, err := func() (res *ErrorStatusCode, err error) {
+	// Default response.
+	res, err := func() (res GetVientoProductsRes, err error) {
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
@@ -554,7 +595,7 @@ func decodeGetVientoProductsResponse(resp *http.Response) (res GetVientoProducts
 	if err != nil {
 		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
-	return res, errors.Wrap(defRes, "error")
+	return res, nil
 }
 
 func decodeGetVientoServicesResponse(resp *http.Response) (res GetVientoServicesRes, _ error) {
@@ -607,8 +648,8 @@ func decodeGetVientoServicesResponse(resp *http.Response) (res GetVientoServices
 		// Code 400.
 		return &GetVientoServicesBadRequest{}, nil
 	}
-	// Convenient error response.
-	defRes, err := func() (res *ErrorStatusCode, err error) {
+	// Default response.
+	res, err := func() (res GetVientoServicesRes, err error) {
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
@@ -649,5 +690,5 @@ func decodeGetVientoServicesResponse(resp *http.Response) (res GetVientoServices
 	if err != nil {
 		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
-	return res, errors.Wrap(defRes, "error")
+	return res, nil
 }

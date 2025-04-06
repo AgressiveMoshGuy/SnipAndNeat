@@ -84,7 +84,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						// Leaf node.
 						switch r.Method {
 						case "POST":
-							s.handleGetVientoItemsRequest([0]string{}, elemIsEscaped, w, r)
+							s.handleGetOzonItemsRequest([0]string{}, elemIsEscaped, w, r)
 						default:
 							s.notAllowed(w, r, "POST")
 						}
@@ -213,6 +213,27 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 
 					elem = origElem
+				}
+
+				elem = origElem
+			case 'p': // Prefix: "pet"
+				origElem := elem
+				if l := len("pet"); len(elem) >= l && elem[0:l] == "pet" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleAddPetRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
 				}
 
 				elem = origElem
@@ -356,9 +377,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						// Leaf node.
 						switch method {
 						case "POST":
-							r.name = "GetVientoItems"
-							r.summary = "get viento items"
-							r.operationID = "getVientoItems"
+							r.name = GetOzonItemsOperation
+							r.summary = "get ozon items"
+							r.operationID = "getOzonItems"
 							r.pathPattern = "/ozon/item"
 							r.args = args
 							r.count = 0
@@ -381,7 +402,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						// Leaf node.
 						switch method {
 						case "POST":
-							r.name = "GetVientoListTransaction"
+							r.name = GetVientoListTransactionOperation
 							r.summary = "get viento list transaction"
 							r.operationID = "getVientoListTransaction"
 							r.pathPattern = "/ozon/list_transaction"
@@ -406,7 +427,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						// Leaf node.
 						switch method {
 						case "POST":
-							r.name = "GetVientoOperations"
+							r.name = GetVientoOperationsOperation
 							r.summary = "get viento operations"
 							r.operationID = "getVientoOperations"
 							r.pathPattern = "/ozon/operation"
@@ -431,7 +452,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						// Leaf node.
 						switch method {
 						case "POST":
-							r.name = "GetVientoPosting"
+							r.name = GetVientoPostingOperation
 							r.summary = "get viento posting"
 							r.operationID = "getVientoPosting"
 							r.pathPattern = "/ozon/posting"
@@ -468,7 +489,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							// Leaf node.
 							switch method {
 							case "POST":
-								r.name = "GetVientoServices"
+								r.name = GetVientoServicesOperation
 								r.summary = "get viento services"
 								r.operationID = "getVientoServices"
 								r.pathPattern = "/ozon/service"
@@ -493,7 +514,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							// Leaf node.
 							switch method {
 							case "POST":
-								r.name = "GetSumServicesByDay"
+								r.name = GetSumServicesByDayOperation
 								r.summary = "get sum services by day"
 								r.operationID = "getSumServicesByDay"
 								r.pathPattern = "/ozon/sum/services"
@@ -512,6 +533,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				elem = origElem
+			case 'p': // Prefix: "pet"
+				origElem := elem
+				if l := len("pet"); len(elem) >= l && elem[0:l] == "pet" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "POST":
+						r.name = AddPetOperation
+						r.summary = "Add a new pet to the store"
+						r.operationID = "addPet"
+						r.pathPattern = "/pet"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+				elem = origElem
 			case 'v': // Prefix: "viento/products"
 				origElem := elem
 				if l := len("viento/products"); len(elem) >= l && elem[0:l] == "viento/products" {
@@ -524,7 +570,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					// Leaf node.
 					switch method {
 					case "POST":
-						r.name = "GetVientoProducts"
+						r.name = GetVientoProductsOperation
 						r.summary = "get viento products"
 						r.operationID = "getVientoProducts"
 						r.pathPattern = "/viento/products"

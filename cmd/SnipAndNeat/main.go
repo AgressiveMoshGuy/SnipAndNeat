@@ -27,14 +27,6 @@ func init() {
 	viper.BindPFlags(pflag.CommandLine)
 }
 
-type InlineKeyboardButton struct {
-	Text                         string  `json:"text"`
-	URL                          *string `json:"url,omitempty"`                              // optional
-	CallbackData                 *string `json:"callback_data,omitempty"`                    // optional
-	SwitchInlineQuery            *string `json:"switch_inline_query,omitempty"`              // optional
-	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // optional
-}
-
 //go:generate go run github.com/ogen-go/ogen/cmd/ogen --clean --package vnt --target ../../generated  ../../openapi.yml
 func main() {
 	cfg, err := config.CreateFromFile()

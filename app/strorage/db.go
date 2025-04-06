@@ -2,12 +2,19 @@ package storage
 
 import (
 	"SnipAndNeat/app/config"
+	"bufio"
 	"context"
 	"database/sql"
 	"embed"
+	"fmt"
 	"net/http"
 	"os"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
+
+	models "SnipAndNeat/generated"
 
 	migrate "github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
@@ -50,6 +57,10 @@ func New(cfg *config.Config) *DB {
 
 type MyLog func(format string, v ...any)
 
+func regexFn(re, s string) (bool, error) {
+	return regexp.MatchString(re, s)
+}
+
 func (db *DB) Start(ctx context.Context) error {
 	newLogger := zap.New(zapcore.NewCore(
 		zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
@@ -67,9 +78,10 @@ func (db *DB) Start(ctx context.Context) error {
 	go func() {
 		sql.Register("sqlite3_with_extensions", &sqlite3.SQLiteDriver{
 			ConnectHook: func(conn *sqlite3.SQLiteConn) error {
-				conn.AuthEnabled()
-				conn.AuthUserAdd(db.cfg.DBConfig.User, db.cfg.DBConfig.Password, true)
-				return conn.Ping(ctx)
+				if err := conn.RegisterFunc("regex", regexFn, true); err != nil {
+					return fmt.Errorf("Error registering function regex: %s", err.Error())
+				}
+				return nil
 			},
 		})
 
@@ -100,28 +112,36 @@ func (db *DB) Start(ctx context.Context) error {
 	db.db.SetMaxOpenConns(db.cfg.DBConfig.MaxOpenConns)
 	db.db.SetConnMaxLifetime(db.cfg.DBConfig.ConnMaxLifetime)
 
-	if err := db.Ping(ctx); err != nil {
+	if err := db.Ping(); err != nil {
 		return errors.Wrap(err, "cannot ping database")
 	}
 
-	return db.migratingUp(ctx)
+	if err := db.migratingUp(); err != nil {
+		return errors.Wrap(err, "cannot migrate up")
+	}
+
+	if err := db.migrateVientoItems(); err != nil {
+		return errors.Wrap(err, "cannot migrate viento items")
+	}
+
+	return nil
 }
 
-func (db *DB) Stop(context.Context) error {
+func (db *DB) Stop(ctx context.Context) error {
 	if db == nil || db.db == nil {
 		return nil
 	}
 	return db.db.Close()
 }
 
-func (db *DB) Ping(context.Context) error {
+func (db *DB) Ping() error {
 	if db == nil || db.db == nil {
 		return sql.ErrConnDone
 	}
 	return db.db.Ping()
 }
 
-func (db *DB) migratingUp(ctx context.Context) error {
+func (db *DB) migratingUp() error {
 	source, err := httpfs.New(http.FS(migrations), "migrations")
 	if err != nil {
 		return errors.Wrap(err, "failed to create fs source")
@@ -149,6 +169,60 @@ func (db *DB) migratingUp(ctx context.Context) error {
 	}
 }
 
+func (db *DB) migrateVientoItems() error {
+	f, err := os.Open("../../temp_scropt/prices.csv")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	db.log.Info().Msg("migrate viento items")
+	scanner := bufio.NewScanner(f)
+	var items []models.VientoItem
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.Split(line, ",")
+		if len(parts) != 3 {
+			db.log.Error().Msgf("invalid line format: %s", line)
+			continue
+		}
+		name, priceStr, eanCodeStr := parts[0], parts[1], parts[2]
+
+		eanCode, err := strconv.ParseInt(eanCodeStr, 10, 64)
+		if err != nil {
+			db.log.Error().Err(err).Msgf("invalid ean code: %s", eanCodeStr)
+			continue
+		}
+
+		price, err := strconv.ParseFloat(priceStr, 32)
+		if err != nil {
+			db.log.Error().Err(err).Msgf("invalid price: %s", priceStr)
+			continue
+		}
+
+		item := models.VientoItem{
+			Name:  name,
+			Price: price,
+			Ean:   eanCode,
+		}
+		items = append(items, item)
+	}
+
+	if err := scanner.Err(); err != nil {
+		db.log.Error().Err(err).Msg("failed to read file")
+		return err
+	}
+	tx := db.gdb.Table("viento_items").Create(items)
+	if tx.Error != nil {
+		db.log.Error().Err(tx.Error).Msg("failed to migrate viento items")
+		return tx.Error
+	}
+
+	db.log.Info().Msgf("migrate viento items %d finished", tx.RowsAffected)
+
+	return nil
+}
+
 // func addPeriodQuery(q *gorm.DB, tabler schema.Tabler, field string, from, to time.Time) *gorm.DB {
 // 	if tabler != nil {
 // 		field = fmt.Sprintf("%s.%s", tabler.TableName(), field)
@@ -163,22 +237,19 @@ func (db *DB) migratingUp(ctx context.Context) error {
 // 	return q
 // }
 
-// type OperFunc func(c context.Context, in any) (any, error)
+type OperFunc func(tx *gorm.DB, in any) (any, error)
 
-// func (db *DB) WithTransaction(f OperFunc) OperFunc {
-// 	return func(ctx context.Context, in any) (any, error) {
-// 		tx := db.gorm.Begin()
-// 		ctx = context.WithValue(ctx, "tx", tx)
-// 		v, err := f(ctx, in)
-// 		if err != nil {
-// 			tx.Rollback()
-// 			ctx = context.WithValue(ctx, "tx", nil)
-// 			return nil, err
-// 		} else {
-// 			tx.Commit()
-// 			ctx = context.WithValue(ctx, "tx", nil)
-// 		}
+func (db *DB) WithTransaction(ctx context.Context, f OperFunc, in any) (any, int64, error) {
+	tx := db.gdb.Begin()
+	v, err := f(tx, in)
+	var res int64
+	if err != nil {
+		tx.Rollback()
+		return nil, 0, err
+	} else {
+		res = tx.Commit().RowsAffected
+	}
 
-// 		return v, nil
-// 	}
-// }
+	return v, res, nil
+
+}

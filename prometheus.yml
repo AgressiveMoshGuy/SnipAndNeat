@@ -1,0 +1,19 @@
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minutes.
+  scrape_timeout:      10s # The timeout when fetching metrics from the target
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # relabel_configs:
+  # - source_labels: [__meta_kubernetes_pod_label_name]
+  #   target_label: __meta_kubernetes_pod_label_name_re
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    follow_redirects: true
+    # This parameter specifies whether or not to follow HTTP redirects when scraping a target.
+    # If true, Prometheus will follow redirects and scrape the final redirected target.
+    # If false, Prometheus will not follow redirects and instead return an error.
+    static_configs:
+      - targets: ['localhost:9090']  

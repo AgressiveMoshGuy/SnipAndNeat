@@ -12,6 +12,8 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/diphantxm/ozon-api-client/ozon"
 	ozon_cli "github.com/diphantxm/ozon-api-client/ozon"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/rs/zerolog"
 )
 
@@ -23,6 +25,7 @@ type Ozon interface {
 	ListProducts(ctx context.Context) ([]*models.VientoProduct, error)
 	GetListTransaction(ctx context.Context, in *models.ListTransactionParams) (*ozon_cli.ListTransactionsResponse, error)
 	GetSumServices(ctx context.Context, in *models.SumServicesByDayParams) (*models.GetSumServicesByDayOKApplicationJSON, error)
+	UpdateEANCodesWithItems(ctx context.Context) (*int64, error)
 }
 
 type OzonAPI struct {
@@ -31,6 +34,7 @@ type OzonAPI struct {
 	client      *ozon_cli.Client
 	db          *storage.DB
 	memcache    *memcache.Client
+	metrics     *metrics
 }
 
 // {
@@ -40,8 +44,33 @@ type OzonAPI struct {
 // 	"Content-Type": "application/json"
 //}
 
+type metrics struct {
+	sellSum prometheus.Histogram
+}
+
+func recordMetrics(opsProcessed prometheus.Histogram) {
+	go func() {
+		for {
+			opsProcessed.Observe(10)
+			time.Sleep(2 * time.Second)
+		}
+	}()
+}
+
 func New(ctx context.Context, cfg *config.Config, d *storage.DB) (*OzonAPI, error) {
 	mClient := memcache.New(cfg.OzonClientConfig.MemcacheHost)
+
+	req := prometheus.NewRegistry()
+	m := &metrics{
+		sellSum: promauto.NewHistogram(prometheus.HistogramOpts{
+			Name:    "ozon_sell_sum",
+			Help:    "The temperature of the frog pond.", // Sorry, we can't measure how badly it smells.
+			Buckets: prometheus.LinearBuckets(20, 5, 5),  // 5 buckets, each 5 centigrade wide.
+		}),
+	}
+
+	req.MustRegister(m.sellSum)
+	recordMetrics(m.sellSum)
 
 	opts := []ozon.ClientOption{
 		ozon.WithAPIKey(cfg.OzonClientConfig.APIKey),
@@ -62,6 +91,7 @@ func New(ctx context.Context, cfg *config.Config, d *storage.DB) (*OzonAPI, erro
 		db:       d,
 		client:   ozonClient,
 		memcache: mClient,
+		metrics:  m,
 	}, nil
 }
 

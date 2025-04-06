@@ -20,26 +20,37 @@ import (
 	"github.com/ogen-go/ogen/uri"
 )
 
+func trimTrailingSlashes(u *url.URL) {
+	u.Path = strings.TrimRight(u.Path, "/")
+	u.RawPath = strings.TrimRight(u.RawPath, "/")
+}
+
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// AddPet invokes addPet operation.
+	//
+	// Add a new pet to the store.
+	//
+	// POST /pet
+	AddPet(ctx context.Context, request *AddPetReq) (*AddPetOK, error)
+	// GetOzonItems invokes getOzonItems operation.
+	//
+	// Get ozon items.
+	//
+	// POST /ozon/item
+	GetOzonItems(ctx context.Context) (GetOzonItemsRes, error)
 	// GetSumServicesByDay invokes getSumServicesByDay operation.
 	//
 	// Get sum services by day.
 	//
 	// POST /ozon/sum/services
 	GetSumServicesByDay(ctx context.Context, request *SumServicesByDayParams) (GetSumServicesByDayRes, error)
-	// GetVientoItems invokes getVientoItems operation.
-	//
-	// Get viento items.
-	//
-	// POST /ozon/item
-	GetVientoItems(ctx context.Context) (GetVientoItemsRes, error)
 	// GetVientoListTransaction invokes getVientoListTransaction operation.
 	//
 	// Get viento list transaction.
 	//
 	// POST /ozon/list_transaction
-	GetVientoListTransaction(ctx context.Context) (GetVientoListTransactionRes, error)
+	GetVientoListTransaction(ctx context.Context, request OptGetSumProficiencyParams) (GetVientoListTransactionRes, error)
 	// GetVientoOperations invokes getVientoOperations operation.
 	//
 	// Get viento operations.
@@ -71,19 +82,10 @@ type Client struct {
 	serverURL *url.URL
 	baseClient
 }
-type errorHandler interface {
-	NewError(ctx context.Context, err error) *ErrorStatusCode
-}
 
 var _ Handler = struct {
-	errorHandler
 	*Client
 }{}
-
-func trimTrailingSlashes(u *url.URL) {
-	u.Path = strings.TrimRight(u.Path, "/")
-	u.RawPath = strings.TrimRight(u.RawPath, "/")
-}
 
 // NewClient initializes new Client defined by OAS.
 func NewClient(serverURL string, opts ...ClientOption) (*Client, error) {
@@ -118,6 +120,153 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
+// AddPet invokes addPet operation.
+//
+// Add a new pet to the store.
+//
+// POST /pet
+func (c *Client) AddPet(ctx context.Context, request *AddPetReq) (*AddPetOK, error) {
+	res, err := c.sendAddPet(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendAddPet(ctx context.Context, request *AddPetReq) (res *AddPetOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("addPet"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/pet"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AddPetOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/pet"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAddPetRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAddPetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetOzonItems invokes getOzonItems operation.
+//
+// Get ozon items.
+//
+// POST /ozon/item
+func (c *Client) GetOzonItems(ctx context.Context) (GetOzonItemsRes, error) {
+	res, err := c.sendGetOzonItems(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetOzonItems(ctx context.Context) (res GetOzonItemsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getOzonItems"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/ozon/item"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetOzonItemsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/ozon/item"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetOzonItemsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetSumServicesByDay invokes getSumServicesByDay operation.
 //
 // Get sum services by day.
@@ -140,14 +289,14 @@ func (c *Client) sendGetSumServicesByDay(ctx context.Context, request *SumServic
 	defer func() {
 		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetSumServicesByDay",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSumServicesByDayOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -193,89 +342,17 @@ func (c *Client) sendGetSumServicesByDay(ctx context.Context, request *SumServic
 	return result, nil
 }
 
-// GetVientoItems invokes getVientoItems operation.
-//
-// Get viento items.
-//
-// POST /ozon/item
-func (c *Client) GetVientoItems(ctx context.Context) (GetVientoItemsRes, error) {
-	res, err := c.sendGetVientoItems(ctx)
-	return res, err
-}
-
-func (c *Client) sendGetVientoItems(ctx context.Context) (res GetVientoItemsRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("getVientoItems"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/ozon/item"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetVientoItems",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/ozon/item"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeGetVientoItemsResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // GetVientoListTransaction invokes getVientoListTransaction operation.
 //
 // Get viento list transaction.
 //
 // POST /ozon/list_transaction
-func (c *Client) GetVientoListTransaction(ctx context.Context) (GetVientoListTransactionRes, error) {
-	res, err := c.sendGetVientoListTransaction(ctx)
+func (c *Client) GetVientoListTransaction(ctx context.Context, request OptGetSumProficiencyParams) (GetVientoListTransactionRes, error) {
+	res, err := c.sendGetVientoListTransaction(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendGetVientoListTransaction(ctx context.Context) (res GetVientoListTransactionRes, err error) {
+func (c *Client) sendGetVientoListTransaction(ctx context.Context, request OptGetSumProficiencyParams) (res GetVientoListTransactionRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getVientoListTransaction"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -287,14 +364,14 @@ func (c *Client) sendGetVientoListTransaction(ctx context.Context) (res GetVient
 	defer func() {
 		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetVientoListTransaction",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetVientoListTransactionOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -319,6 +396,9 @@ func (c *Client) sendGetVientoListTransaction(ctx context.Context) (res GetVient
 	r, err := ht.NewRequest(ctx, "POST", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGetVientoListTransactionRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	stage = "SendRequest"
@@ -359,14 +439,14 @@ func (c *Client) sendGetVientoOperations(ctx context.Context) (res GetVientoOper
 	defer func() {
 		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetVientoOperations",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetVientoOperationsOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -431,14 +511,14 @@ func (c *Client) sendGetVientoPosting(ctx context.Context) (res GetVientoPosting
 	defer func() {
 		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetVientoPosting",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetVientoPostingOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -503,14 +583,14 @@ func (c *Client) sendGetVientoProducts(ctx context.Context) (res GetVientoProduc
 	defer func() {
 		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetVientoProducts",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetVientoProductsOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -575,14 +655,14 @@ func (c *Client) sendGetVientoServices(ctx context.Context) (res GetVientoServic
 	defer func() {
 		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetVientoServices",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetVientoServicesOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)

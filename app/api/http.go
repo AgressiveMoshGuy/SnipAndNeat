@@ -11,6 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
 
@@ -63,7 +65,43 @@ type Server struct {
 	// validator *validator.Validate
 }
 
+func prometheusHandler() gin.HandlerFunc {
+	h := promhttp.Handler()
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
 func (s *Server) Start(context.Context) error {
+	// создаем метрику, которая будет отображать сумму продаж
+	// для этого нужно создать метрику типа GaugeVec
+	// GaugeVec - это тип метрики, который может иметь несколько значений
+	// в этом случае мы будем иметь метрику, которая будет отображать сумму
+	// продаж по каждому типу товара
+	// для этого нужно создать метрику с именем, например "sells_sum"
+	// и добавить лэйбл "type", который будет отображать тип товара
+	// после этого мы можем использовать методы Inc и Dec для увеличения
+	// или уменьшения значения метрики
+	// например, если у нас есть заказ на товар "apple", то мы можем
+	// использовать следующий код:
+	// metric.WithLabelValues("apple").Inc()
+	// это увеличит значение метрики "sells_sum" для типа "apple" на 1
+	// мы можем использовать этот код в любой момент, когда мы хотим
+	// отобразить сумму продаж по типу товара
+	/*************  ✨ Codeium Command 🌟  *************/
+	metric := prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "sells_sum",
+			Help: "Sum of sells by type",
+		},
+		[]string{"type"},
+	)
+	prometheus.MustRegister(metric)
+
+	metric.WithLabelValues("apple").Inc()
+	s.rtr.Handle("GET", "/metrics", prometheusHandler())
+
 	s.rtr.Group("/").
 		GET("/", s.getHealth).
 		GET("/health", s.getHealth).
@@ -74,7 +112,8 @@ func (s *Server) Start(context.Context) error {
 		POST("/list_transactions", s.ListTransactions).
 		POST("/sum/services", s.GetSumServices)
 	s.rtr.Group("/viento").
-		POST("/list_products", s.VientoProducts)
+		POST("/list_products", s.VientoProducts).
+		POST("/update_barcodes", s.UpdateItemsBarcode)
 	// GET("/dictionary", s.getDictionary).
 	// GET("/credit_products", s.getCreditProducts).
 	// GET("/draft", s.getDraft).

@@ -33,6 +33,7 @@ print("3 Lines in dataframe:", df.shape[0], "Columns in dataframe:", df.shape[1]
 # Reorder the columns
 # just pass a list of column names in the desired order
 df.iloc[:, 0] = df.iloc[:, 0].astype(str)
+df.iloc[:, 1] = df.iloc[:, 1].apply(lambda x: str(x).replace(',', ''))
 df = df[[df.columns[1], df.columns[2], df.columns[0]]]
 
 # Write dataframe to excel file
