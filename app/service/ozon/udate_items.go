@@ -27,9 +27,9 @@ func (z *OzonAPI) UpdateEANCodesWithItems(ctx context.Context) (*int64, error) {
 		return nil, err
 	}
 
-	var reqMap = make(map[int64]int64, len(result.Result.Items))
-	for _, v := range result.Result.Items {
-		barcode, err := strconv.Atoi(v.Barcode)
+	var reqMap = make(map[int64]int64, len(result.Items))
+	for _, v := range result.Items {
+		barcode, err := strconv.Atoi(v.Barcodes[0])
 		if err != nil {
 			continue
 		}

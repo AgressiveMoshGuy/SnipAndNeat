@@ -1,0 +1,594 @@
+{
+	"items": [
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-x/6717134733.jpg",
+				"name": "Вентилятор осевой вытяжной с обратным клапаном, таймером и датчиком влажности, МАЛОШУМНЫЙ, ВИЕНТО В125СНК STILL (240 м3) волна белый",
+				"sku": "1068877063",
+				"article": "ВИЕНТО В125СНК STILL-B",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 0,
+				"delivery_time_status": "Unknown"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 0,
+				"prompt": "PROMPT_TYPE_UNKNOWN",
+				"inStock": 10,
+				"transit": 0,
+				"adsQuantity": 0,
+				"idc": 0,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-m/7179150802.jpg",
+				"name": "Люк-дверца ревизионная 200 х 200 мм пластиковый Viento",
+				"sku": "1474688670",
+				"article": "ДР2020",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 0,
+				"delivery_time_status": "Unknown"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 0,
+				"prompt": "PROMPT_TYPE_UNKNOWN",
+				"inStock": 1,
+				"transit": 0,
+				"adsQuantity": 0,
+				"idc": 0,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-f/7030049595.jpg",
+				"name": "Люк ревизионный ширина 300мм, длина 300мм металлический скрытый Viento",
+				"sku": "1469686262",
+				"article": "Л3030МС",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 0,
+				"delivery_time_status": "Unknown"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 0,
+				"prompt": "PROMPT_TYPE_UNKNOWN",
+				"inStock": 3,
+				"transit": 0,
+				"adsQuantity": 0,
+				"idc": 0,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-r/7142092695.jpg",
+				"name": "Вентилятор вытяжной канальный, диаметр 100, ВИЕНТО ВКО 100 малошумный / для кухни, для санузла, ванной, душевой, туалета",
+				"sku": "720091035",
+				"article": "ВИЕНТО ВКО100",
+				"itemFeature": "FEATURE_SUPER",
+				"local_percent": 0,
+				"average_delivery_time": 55,
+				"delivery_time_status": "Long"
+			},
+			"accessibility": {
+				"accessibility": 0,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 12446,
+				"adsRub": 444.5,
+				"prompt": "PROMPT_TYPE_CRITICAL_STOCK",
+				"inStock": 0,
+				"transit": 0,
+				"adsQuantity": 0.4,
+				"idc": 0,
+				"stockAvailDays": 0,
+				"recommendedSupply": "12"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-5/7142092349.jpg",
+				"name": "Вентилятор вытяжной канальный, диаметр 125, ВИЕНТО ВКО 125К с обратным клапаном, малошумный",
+				"sku": "1745132204",
+				"article": "ВКО125К-В",
+				"itemFeature": "FEATURE_SUPER",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 46,
+				"accessibilityIndexDelta": -8,
+				"missedSales": 4585,
+				"adsRub": 305.69,
+				"prompt": "PROMPT_TYPE_CRITICAL_STOCK",
+				"inStock": 0,
+				"transit": 0,
+				"adsQuantity": 0.31,
+				"idc": 0,
+				"stockAvailDays": 13,
+				"recommendedSupply": "9"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-1/7143493681.jpg",
+				"name": "Вентилятор осевой, вытяжной с обратным клапаном ВИЕНТО В100СК STILL(130 м3), ВОЛНА серый",
+				"sku": "788786443",
+				"article": "ВИЕНТО В100СК STILL серый",
+				"itemFeature": "FEATURE_SUPER",
+				"local_percent": 0,
+				"average_delivery_time": 60,
+				"delivery_time_status": "Long"
+			},
+			"accessibility": {
+				"accessibility": 0,
+				"accessibilityIndexDelta": -100,
+				"missedSales": 8325,
+				"adsRub": 297.33,
+				"prompt": "PROMPT_TYPE_CRITICAL_STOCK",
+				"inStock": 0,
+				"transit": 0,
+				"adsQuantity": 0.22,
+				"idc": 0,
+				"stockAvailDays": 0,
+				"recommendedSupply": "7"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-d/6811607317.jpg",
+				"name": "Вентилятор осевой вытяжной с таймером и датчиком влажности, МАЛОШУМНЫЙ, ВИЕНТО 125СН STILL (240 м3) серый",
+				"sku": "1253996692",
+				"article": "ВИЕНТО 125СНК STILL gray",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 45,
+				"delivery_time_status": "Medium"
+			},
+			"accessibility": {
+				"accessibility": 0,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 5778,
+				"adsRub": 206.36,
+				"prompt": "PROMPT_TYPE_CRITICAL_STOCK",
+				"inStock": 0,
+				"transit": 0,
+				"adsQuantity": 0.11,
+				"idc": 0,
+				"stockAvailDays": 0,
+				"recommendedSupply": "4"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-4/6493777876.jpg",
+				"name": "Вентилятор осевой, вытяжной с обратным клапаном ВИЕНТО 100СК STILL(130 м3), серый",
+				"sku": "920691057",
+				"article": "ВИЕНТО 100СК STILL gray",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 45,
+				"delivery_time_status": "Medium"
+			},
+			"accessibility": {
+				"accessibility": 0,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 2634,
+				"adsRub": 94.07,
+				"prompt": "PROMPT_TYPE_CRITICAL_STOCK",
+				"inStock": 0,
+				"transit": 0,
+				"adsQuantity": 0.07,
+				"idc": 0,
+				"stockAvailDays": 0,
+				"recommendedSupply": "3"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-f/7030049595.jpg",
+				"name": "Люк ревизионный ширина 400мм, длина 400мм металлический скрытый Viento",
+				"sku": "1474636561",
+				"article": "Л4040МС",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 0,
+				"delivery_time_status": "Unknown"
+			},
+			"accessibility": {
+				"accessibility": 0,
+				"accessibilityIndexDelta": -100,
+				"missedSales": 2398,
+				"adsRub": 85.64,
+				"prompt": "PROMPT_TYPE_CRITICAL_STOCK",
+				"inStock": 0,
+				"transit": 0,
+				"adsQuantity": 0.04,
+				"idc": 0,
+				"stockAvailDays": 0,
+				"recommendedSupply": "2"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-4/7143494404.jpg",
+				"name": "Вентилятор осевой, вытяжной с обратным клапаном ВИЕНТО В100СК STILL(130 м3), ВОЛНА белый",
+				"sku": "807644111",
+				"article": "Виенто В100СК STILL",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 0,
+				"delivery_time_status": "Unknown"
+			},
+			"accessibility": {
+				"accessibility": 0,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 1298,
+				"adsRub": 46.36,
+				"prompt": "PROMPT_TYPE_CRITICAL_STOCK",
+				"inStock": 0,
+				"transit": 0,
+				"adsQuantity": 0.04,
+				"idc": 0,
+				"stockAvailDays": 0,
+				"recommendedSupply": "2"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-2/6717134954.jpg",
+				"name": "Вентилятор осевой, вытяжной с обратным клапаном, ВИЕНТО 125СК STILL (240 м3), слоновая кость",
+				"sku": "964896878",
+				"article": "ВИЕНТО 125СК STILL ivory",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 98.46,
+				"prompt": "PROMPT_TYPE_LOW_STOCK",
+				"inStock": 1,
+				"transit": 0,
+				"adsQuantity": 0.07,
+				"idc": 14,
+				"stockAvailDays": 28,
+				"recommendedSupply": "2"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-3/7227872679.jpg",
+				"name": "Вентилятор вытяжной со съемной панелью в сборе LUNA. Серия GORIZONT 100 VIENTO, серый",
+				"sku": "1745154593",
+				"article": "LUNA GZ 100gray",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 50,
+				"prompt": "PROMPT_TYPE_LOW_STOCK",
+				"inStock": 1,
+				"transit": 0,
+				"adsQuantity": 0.04,
+				"idc": 28,
+				"stockAvailDays": 28,
+				"recommendedSupply": "1"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-m/7301023798.jpg",
+				"name": "Вентилятор вытяжной со съемной панелью в сборе LUNA. Серия SFERA 100 (130 м3) VIENTO, графит",
+				"sku": "1242276777",
+				"article": "LUNA SF 100gray",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 103.75,
+				"prompt": "PROMPT_TYPE_OK",
+				"inStock": 6,
+				"transit": 0,
+				"adsQuantity": 0.07,
+				"idc": 84,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-3/6641540355.jpg",
+				"name": "Вентилятор осевой, вытяжной с обратным клапаном, МАЛОШУМНЫЙ, ВИЕНТО 125СК STILL (240 м3) белый",
+				"sku": "964905272",
+				"article": "ВИЕНТО 125СК STILL",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 64.73,
+				"prompt": "PROMPT_TYPE_OK",
+				"inStock": 8,
+				"transit": 0,
+				"adsQuantity": 0.07,
+				"idc": 112,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-g/7142095528.jpg",
+				"name": "Вентилятор осевой вытяжной с таймером и датчиком влажности, МАЛОШУМНЫЙ, ВИЕНТО 125СН STILL (240 м3) слоновая кость",
+				"sku": "1253998062",
+				"article": "ВИЕНТО 125СН STILL ivory",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 60.11,
+				"prompt": "PROMPT_TYPE_OK",
+				"inStock": 3,
+				"transit": 0,
+				"adsQuantity": 0.04,
+				"idc": 84,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-c/6641536872.jpg",
+				"name": "Вентилятор осевой вытяжной с таймером и датчиком влажности, МАЛОШУМНЫЙ, ВИЕНТО 100СН STILL (130 м3) слоновая кость",
+				"sku": "1254012436",
+				"article": "ВИЕНТО 100СН STILL ivory",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 51.82,
+				"prompt": "PROMPT_TYPE_OK",
+				"inStock": 6,
+				"transit": 0,
+				"adsQuantity": 0.04,
+				"idc": 168,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-a/7143494050.jpg",
+				"name": "Вентилятор осевой, вытяжной с обратным клапаном ВИЕНТО В100СК STILL (130 м3), ВОЛНА крем",
+				"sku": "788782689",
+				"article": "ВИЕНТО В100СК крем",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 49.18,
+				"prompt": "PROMPT_TYPE_OK",
+				"inStock": 2,
+				"transit": 0,
+				"adsQuantity": 0.04,
+				"idc": 56,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-k/7142090060.jpg",
+				"name": "Анемостат приточно-вытяжной с фланцем универсальный, серия АПВ, диаметр 100мм, для приточной и вытяжной вентиляции",
+				"sku": "920025241",
+				"article": "100АПВФ",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 29.93,
+				"prompt": "PROMPT_TYPE_OK",
+				"inStock": 4,
+				"transit": 0,
+				"adsQuantity": 0.07,
+				"idc": 56,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		},
+		{
+			"item": {
+				"imgPath": "https://cdn1.ozone.ru/s3/multimedia-1-g/7142090812.jpg",
+				"name": "Анемостат приточно-вытяжной с фланцем универсальный, серия АПВ, диаметр 125мм для приточной и вытяжной вентиляции",
+				"sku": "918577417",
+				"article": "125АПВФ",
+				"itemFeature": "FEATURE_NOPE",
+				"local_percent": 0,
+				"average_delivery_time": 28,
+				"delivery_time_status": "Fast"
+			},
+			"accessibility": {
+				"accessibility": 100,
+				"accessibilityIndexDelta": 0,
+				"missedSales": 0,
+				"adsRub": 13,
+				"prompt": "PROMPT_TYPE_OK",
+				"inStock": 2,
+				"transit": 0,
+				"adsQuantity": 0.04,
+				"idc": 56,
+				"stockAvailDays": 28,
+				"recommendedSupply": "0"
+			},
+			"discount": {
+				"isDiscount": false,
+				"discountDurationDays": 0,
+				"discount": 0,
+				"isException": false
+			}
+		}
+	],
+	"totalRows": "19"
+}

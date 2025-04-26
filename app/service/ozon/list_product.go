@@ -34,11 +34,11 @@ func (z *OzonAPI) ListProducts(ctx context.Context) ([]*models.VientoProduct, er
 	})
 
 	var tempMap = make(map[string]*models.VientoProduct)
-	for _, v := range result.Result.Items {
-		tempMap[v.Barcode] = &models.VientoProduct{
+	for _, v := range result.Items {
+		tempMap[v.Barcodes[0]] = &models.VientoProduct{
 			ProductID: models.NewOptInt64(v.Id),
 			OfferID:   models.NewOptString(v.OfferId),
-			Barcode:   models.NewOptString(v.Barcode),
+			Barcode:   models.NewOptString(v.Barcodes[0]),
 		}
 	}
 
